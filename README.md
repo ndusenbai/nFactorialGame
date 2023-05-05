@@ -9,6 +9,10 @@ I am use python program language with pygame library.
   
 3 - step
   you use 4 keyboard, as LEFT, RIGHT, UP, DOWN
+  
+REMARK:
+  File with name: top_10.json -> save top 10 long time in json format.
+  
 ![Arrow_keys](https://user-images.githubusercontent.com/77536930/236517772-be3cdc11-a659-44f6-a050-8c57d0cf0dfe.jpg)
 
 SCREEN WINDOW 
