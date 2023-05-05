@@ -130,6 +130,8 @@ if __name__ == '__main__':
     START_TIME = time.time()
 
     pygame.init()
+    pygame.mixer.init()
+
     pygame.time.set_timer(pygame.USEREVENT, INTERVAL)
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -139,6 +141,11 @@ if __name__ == '__main__':
 
     for i in range(len(EGGS)):
         EGGS_SURF.append(pygame.transform.scale(pygame.image.load(EGGS[i]).convert_alpha(), (50, 50)))
+
+    # load music in pygame
+    sound1 = pygame.mixer.Sound('music/eat.mp3')
+    sound2 = pygame.mixer.Sound('music/go.mp3')
+    sound3 = pygame.mixer.Sound('music/boom.wav')
 
     # img load in pygame
     bird_1 = pygame.transform.scale(pygame.image.load('img/birds/bird_1.png'), (80, 80))
@@ -182,9 +189,11 @@ if __name__ == '__main__':
                 Egg(random.choice(STARTING_POINTS_LIST_VERTICAL_EGG),
                     random.choice(STARTING_POINTS_LIST_HORIZONTAL_EGG), EGGS_SURF[0], eggs, SPEED)
 
+
             # MAKING A PLAYER'S CAR MOVE TO OTHER ROAD LINE
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
+                    sound1.play()
                     if point_x != STARTING_POINTS_LIST_VERTICAL[0]:
                         point_x = STARTING_POINTS_LIST_VERTICAL[0]
                         obj_player.update(point_x, point_y)
@@ -194,13 +203,14 @@ if __name__ == '__main__':
                         wolf_left_bottom_bool = False
                         wolf_right_top = False
                         wolf_right_bottom_bool = False
-                    elif wolf_right_bottom:
+                    elif wolf_right_bottom_bool:
                         wolf_left_top = False
                         wolf_left_bottom_bool = True
                         wolf_right_top = False
                         wolf_right_bottom_bool = False
 
                 elif event.key == pygame.K_RIGHT:
+                    sound1.play()
                     if point_x != STARTING_POINTS_LIST_VERTICAL[1]:
                         point_x = STARTING_POINTS_LIST_VERTICAL[1]
                         obj_player.update(point_x, point_y)
@@ -217,6 +227,7 @@ if __name__ == '__main__':
                         wolf_right_bottom_bool = True
 
                 elif event.key == pygame.K_UP:
+                    sound1.play()
                     if point_y != STARTING_POINTS_LIST_HORIZONTAL[0]:
                         point_y = STARTING_POINTS_LIST_HORIZONTAL[0]
                         obj_player.update(point_x, point_y)
@@ -233,6 +244,7 @@ if __name__ == '__main__':
                         wolf_right_bottom_bool = False
 
                 elif event.key == pygame.K_DOWN:
+                    sound1.play()
                     if point_y != STARTING_POINTS_LIST_HORIZONTAL[1]:
                         point_y = STARTING_POINTS_LIST_HORIZONTAL[1]
                         obj_player.update(point_x, point_y)
@@ -290,16 +302,17 @@ if __name__ == '__main__':
         wolf_img_y = 150
         if wolf_right_top == True and wolf_right_bottom_bool == False:
             screen.blit(wolf_right, (290, 80))
-        elif wolf_left_top == True and wolf_left_bottom_bool == False:
+        if wolf_left_top == True and wolf_left_bottom_bool == False:
             screen.blit(wolf_left, (190, 80))
-        elif wolf_right_bottom_bool and wolf_right_top == False:
+        if wolf_right_bottom_bool and wolf_right_top == False:
             screen.blit(wolf_right_bottom, (320, 240))
-        elif wolf_left_bottom_bool and wolf_left_top == False:
+        if wolf_left_bottom_bool and wolf_left_top == False:
             screen.blit(wolf_left_bottom, (150, 240))
 
         # kill
         hit_player = pygame.sprite.spritecollide(obj_bottom_kill, eggs, True)
         if hit_player:
+            sound3.play()
             END_TIME = time.time()
             different_time = END_TIME - START_TIME
 
@@ -329,12 +342,13 @@ if __name__ == '__main__':
 
             pygame.display.update()
 
-            # time.sleep(10)
-            # game = False
+            time.sleep(10)
+            game = False
 
         # egg score, sceed
         hit_player = pygame.sprite.spritecollide(obj_player, eggs, True)
         if hit_player:
+            sound2.play()
             SCORE += 1
 
             if SCORE % 10 == 0:
