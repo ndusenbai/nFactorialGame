@@ -126,7 +126,7 @@ if __name__ == '__main__':
     LEVAL = [15, 30]
     INTERVAL = 1000
 
-    #time
+    # time
     START_TIME = time.time()
 
     pygame.init()
@@ -145,10 +145,20 @@ if __name__ == '__main__':
     bird_2 = pygame.transform.scale(pygame.image.load('img/birds/bird_2.png'), (80, 80))
     bird_3 = pygame.transform.scale(pygame.image.load('img/birds/bird_3.png'), (80, 80))
     bird_4 = pygame.transform.scale(pygame.image.load('img/birds/bird_4.png'), (80, 80))
-    egg_birds_left_top = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), -20)
-    egg_birds_left_bottom = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), -20)
-    egg_birds_right_top = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), 20)
-    egg_birds_right_bottom = pygame.transform.rotate(pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), 20)
+    egg_birds_left_top = pygame.transform.rotate(
+        pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), -20)
+    egg_birds_left_bottom = pygame.transform.rotate(
+        pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), -20)
+    egg_birds_right_top = pygame.transform.rotate(
+        pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), 20)
+    egg_birds_right_bottom = pygame.transform.rotate(
+        pygame.transform.scale(pygame.image.load("img/other/egg_birds.png"), (170, 20)), 20)
+    wolf_x = 320
+    wolf_y = 370
+    wolf_left = pygame.transform.scale(pygame.image.load("img/wolf/woif_left.png"), (wolf_x, wolf_y))
+    wolf_right = pygame.transform.scale(pygame.image.load("img/wolf/woif_right.png"), (wolf_x, wolf_y))
+    wolf_left_bottom = pygame.transform.scale(pygame.image.load("img/wolf/woif_left_bottom.png"), (wolf_x, wolf_y))
+    wolf_right_bottom = pygame.transform.scale(pygame.image.load("img/wolf/woif_ritgh_bottom.png"), (wolf_x, wolf_y))
 
     # Group
     eggs = pygame.sprite.Group()
@@ -158,13 +168,19 @@ if __name__ == '__main__':
     obj_bottom_kill = Bottom_kill('img/other/bottom.png')
     obj_top_player = Top_player()
 
+    wolf_left_top = True
+    wolf_right_top = False
+    wolf_left_bottom_bool = False
+    wolf_right_bottom_bool = False
+
     while game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.USEREVENT:
-                Egg(random.choice(STARTING_POINTS_LIST_VERTICAL_EGG), random.choice(STARTING_POINTS_LIST_HORIZONTAL_EGG), EGGS_SURF[0], eggs, SPEED)
+                Egg(random.choice(STARTING_POINTS_LIST_VERTICAL_EGG),
+                    random.choice(STARTING_POINTS_LIST_HORIZONTAL_EGG), EGGS_SURF[0], eggs, SPEED)
 
             # MAKING A PLAYER'S CAR MOVE TO OTHER ROAD LINE
             if event.type == pygame.KEYDOWN:
@@ -172,22 +188,69 @@ if __name__ == '__main__':
                     if point_x != STARTING_POINTS_LIST_VERTICAL[0]:
                         point_x = STARTING_POINTS_LIST_VERTICAL[0]
                         obj_player.update(point_x, point_y)
+
+                    if wolf_right_top:
+                        wolf_left_top = True
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = False
+                    elif wolf_right_bottom:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = True
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = False
+
                 elif event.key == pygame.K_RIGHT:
                     if point_x != STARTING_POINTS_LIST_VERTICAL[1]:
                         point_x = STARTING_POINTS_LIST_VERTICAL[1]
                         obj_player.update(point_x, point_y)
+
+                    if wolf_left_top:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = True
+                        wolf_right_bottom_bool = False
+                    elif wolf_left_bottom_bool:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = True
+
                 elif event.key == pygame.K_UP:
                     if point_y != STARTING_POINTS_LIST_HORIZONTAL[0]:
                         point_y = STARTING_POINTS_LIST_HORIZONTAL[0]
                         obj_player.update(point_x, point_y)
+
+                    if wolf_left_bottom_bool:
+                        wolf_left_top = True
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = False
+                    elif wolf_right_bottom:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = True
+                        wolf_right_bottom_bool = False
+
                 elif event.key == pygame.K_DOWN:
                     if point_y != STARTING_POINTS_LIST_HORIZONTAL[1]:
                         point_y = STARTING_POINTS_LIST_HORIZONTAL[1]
                         obj_player.update(point_x, point_y)
 
+                    if wolf_left_top:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = True
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = False
+                    elif wolf_right_top:
+                        wolf_left_top = False
+                        wolf_left_bottom_bool = False
+                        wolf_right_top = False
+                        wolf_right_bottom_bool = True
+
         screen.fill((255, 255, 255))
 
-        #backgrount image
+        # backgrount image
         background = pygame.transform.scale(pygame.image.load('./img/lavel/lavel_1.png'), (800, 600))
         screen.blit(background, (0, 0))
         eggs.draw(screen)
@@ -199,7 +262,7 @@ if __name__ == '__main__':
         obj_text_score = Write_text(font, text)
         screen.blit(text, obj_text_score.score_text(250, 50))
 
-        #text leval
+        # text leval
         if SCORE <= LEVAL[0]:
             text = font.render(f'Leval: 1', True, (34, 139, 34), (25, 25, 112))
         elif LEVAL[0] < SCORE <= LEVAL[1]:
@@ -209,11 +272,11 @@ if __name__ == '__main__':
         obj_text_score = Write_text(font, text)
         screen.blit(text, obj_text_score.leval_text(600, 50))
 
-        #build player image
+        # build player image
         screen.blit(obj_player.image, obj_player.rect)
         screen.blit(obj_bottom_kill.image, obj_bottom_kill.rect)
 
-        #build birds images
+        # build birds images
         screen.blit(bird_1, (50, 50))
         screen.blit(bird_2, (650, 50))
         screen.blit(bird_3, (50, 250))
@@ -223,7 +286,18 @@ if __name__ == '__main__':
         screen.blit(egg_birds_right_top, (580, 120))
         screen.blit(egg_birds_right_top, (580, 320))
 
-        #kill
+        wolf_img_x = 280
+        wolf_img_y = 150
+        if wolf_right_top == True and wolf_right_bottom_bool == False:
+            screen.blit(wolf_right, (290, 80))
+        elif wolf_left_top == True and wolf_left_bottom_bool == False:
+            screen.blit(wolf_left, (190, 80))
+        elif wolf_right_bottom_bool and wolf_right_top == False:
+            screen.blit(wolf_right_bottom, (320, 240))
+        elif wolf_left_bottom_bool and wolf_left_top == False:
+            screen.blit(wolf_left_bottom, (150, 240))
+
+        # kill
         hit_player = pygame.sprite.spritecollide(obj_bottom_kill, eggs, True)
         if hit_player:
             END_TIME = time.time()
@@ -234,7 +308,6 @@ if __name__ == '__main__':
             done_json = obj_top_player.record(order_list)
             my_index = obj_top_player.my_index(done_json, different_time)
             obj_top_player.save_json(done_json)
-            print(type(my_index))
 
             screen.blit(background, (0, 0))
 
@@ -256,10 +329,10 @@ if __name__ == '__main__':
 
             pygame.display.update()
 
-            time.sleep(10)
-            game = False
+            # time.sleep(10)
+            # game = False
 
-        #egg score, sceed
+        # egg score, sceed
         hit_player = pygame.sprite.spritecollide(obj_player, eggs, True)
         if hit_player:
             SCORE += 1
